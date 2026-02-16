@@ -22,11 +22,15 @@ function PayPalButtonWrapper({
   const [{ isPending }] = usePayPalScriptReducer();
 
   const createOrder = useCallback(
-    (_data: { paymentSource?: string }, actions: { order: { create: (opts: object) => Promise<string> } }) =>
+    (data: any, actions: any) =>
       actions.order.create({
+        intent: "CAPTURE",
         purchase_units: [
           {
-            amount: { currency_code: "USD", value: "4.99" },
+            amount: {
+              currency_code: "USD",
+              value: "5.00",
+            },
           },
         ],
       }),
