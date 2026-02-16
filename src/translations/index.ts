@@ -18,6 +18,8 @@ export type TranslationKeys = {
 
   // Interpretation Modal
   modalTitle: string;
+  resultHeader: string;
+  resultHeaderNoConcern: string;
   premiumBadge: string;
   past: string;
   present: string;
@@ -80,6 +82,8 @@ export const translations: Record<Locale, TranslationKeys> = {
     drawAgain: "Draw Again",
 
     modalTitle: "Your Tarot Reading",
+    resultHeader: "This is the tarot's answer to your concern: 「{concern}」",
+    resultHeaderNoConcern: "This is the tarot's answer for you.",
     premiumBadge: "✨ Premium Reading",
     past: "Past",
     present: "Present",
@@ -132,6 +136,8 @@ export const translations: Record<Locale, TranslationKeys> = {
     drawAgain: "다시 뽑기",
 
     modalTitle: "당신의 타로 해석",
+    resultHeader: "당신의 고민 「{concern}」에 대한 타로의 대답입니다",
+    resultHeaderNoConcern: "당신에 대한 타로의 대답입니다",
     premiumBadge: "✨ 프리미엄 해석",
     past: "과거",
     present: "현재",

@@ -3,6 +3,7 @@
 import { useRef, useCallback } from "react";
 import html2canvas from "html2canvas";
 import { getLocalizedCard, type TarotCardBase } from "@/data/tarotCards";
+import { getCardData } from "@/lib/tarotInterpretation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import PremiumReportView from "./PremiumReportView";
 import ShareableResultView from "./ShareableResultView";
@@ -89,7 +90,9 @@ export default function InterpretationModal({
 
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:justify-center sm:gap-6">
           {cards.map((card, i) => {
-            const { name, meaning } = getLocalizedCard(card, locale);
+            const { name } = getLocalizedCard(card, locale);
+            const cardData = getCardData(card);
+            const keywords = cardData?.keywords?.join(" · ") ?? "";
             return (
               <div
                 key={card.id}
@@ -99,7 +102,9 @@ export default function InterpretationModal({
                   {i === 0 ? t.past : i === 1 ? t.present : t.future}
                 </div>
                 <div className="mb-2 font-semibold text-amber-100">{name}</div>
-                <div className="text-sm text-amber-200/90">{meaning}</div>
+                {keywords && (
+                  <div className="text-sm text-amber-200/90">{keywords}</div>
+                )}
               </div>
             );
           })}
@@ -151,6 +156,11 @@ export default function InterpretationModal({
                 : "glass"
             }`}
           >
+            <p className="mb-5 text-center text-base font-medium text-amber-200/95">
+              {concern.trim()
+                ? t.resultHeader.replace("{concern}", concern.trim())
+                : t.resultHeaderNoConcern}
+            </p>
             {isPremium && (
               <div className="mb-4 flex items-center justify-center gap-2 text-amber-400">
                 <span className="text-sm font-medium">{t.premiumBadge}</span>
@@ -199,6 +209,11 @@ export default function InterpretationModal({
               presentLabel={t.present}
               futureLabel={t.future}
               concernLabel={t.yourConcern}
+              resultHeaderText={
+                concern.trim()
+                  ? t.resultHeader.replace("{concern}", concern.trim())
+                  : t.resultHeaderNoConcern
+              }
               isPremium={isPremium}
               premiumBadge={t.premiumBadge}
             />

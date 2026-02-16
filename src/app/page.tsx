@@ -8,8 +8,13 @@ import PaymentPopup from "@/components/PaymentPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ShareButton from "@/components/ShareButton";
 import { useDailyLimit } from "@/hooks/useDailyLimit";
+import { usePremium } from "@/hooks/usePremium";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { TRUSTED_SEEKERS_COUNT } from "@/lib/config";
+import {
+  getFreeInterpretation,
+  getPremiumInterpretation,
+} from "@/lib/tarotInterpretation";
 
 function shuffleArray<T>(array: T[]): T[] {
   const arr = [...array];
@@ -36,6 +41,7 @@ export default function Home() {
   const [interpretationUnlocked, setInterpretationUnlocked] = useState(false);
   const [isPremiumInterpretation, setIsPremiumInterpretation] = useState(false);
   const { canUseFree, useFreeReading } = useDailyLimit();
+  const { setPremium } = usePremium();
 
   useEffect(() => {
     setDeck(shuffleArray(TAROT_CARDS));
@@ -57,7 +63,7 @@ export default function Home() {
     setNextDrawIndex((prev) => prev + 1);
   };
 
-  const handleGetInterpretation = async () => {
+  const handleGetInterpretation = () => {
     if (!canUseFree) {
       setIsPaymentPopupOpen(true);
       return;
@@ -66,36 +72,10 @@ export default function Home() {
     if (selectedCards.length !== 3) return;
 
     setIsModalOpen(true);
-    setInterpretation("");
     setInterpretationUnlocked(false);
     setIsPremiumInterpretation(false);
-    setIsLoading(true);
-
-    try {
-      const res = await fetch("/api/interpret", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cards: selectedCards.map((c) => ({
-            name: locale === "ko" ? c.nameKo : c.nameEn,
-            nameEn: c.nameEn,
-            meaning: locale === "ko" ? c.meaningKo : c.meaningEn,
-          })),
-          concern: concern.trim() || undefined,
-          locale,
-          premium: false,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Request failed");
-      useFreeReading();
-      setInterpretation(data.interpretation);
-    } catch {
-      setInterpretation(t.errorDefault);
-    } finally {
-      setIsLoading(false);
-    }
+    useFreeReading();
+    setInterpretation(getFreeInterpretation(selectedCards) || t.errorDefault);
   };
 
   const handleReset = () => {
@@ -111,6 +91,20 @@ export default function Home() {
 
   const handleRequestUnlock = () => {
     setIsPaymentPopupOpen(true);
+  };
+
+  const handlePaymentComplete = () => {
+    setIsPaymentPopupOpen(false);
+    setPremium();
+
+    if (selectedCards.length !== 3) return;
+
+    setIsModalOpen(true);
+    setIsPremiumInterpretation(true);
+    setInterpretation(
+      getPremiumInterpretation(selectedCards, locale === "ko" ? "ko" : "en")
+    );
+    setInterpretationUnlocked(true);
   };
 
   return (
@@ -200,6 +194,7 @@ export default function Home() {
       <PaymentPopup
         isOpen={isPaymentPopupOpen}
         onClose={() => setIsPaymentPopupOpen(false)}
+        onPaymentComplete={handlePaymentComplete}
       />
     </div>
   );

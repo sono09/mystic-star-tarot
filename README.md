@@ -7,7 +7,7 @@ Next.js와 Tailwind CSS로 만든 신비로운 타로 상담 웹앱입니다.
 - **78장의 타로 카드**: 메이저 아르카나 22장 + 마이너 아르카나 56장
 - **3장 선택**: 과거-현재-미래 스프레드
 - **카드 뒤집기 애니메이션**: 선택 시 3D 플립 효과
-- **AI 개인화 해석**: OpenAI API로 고민과 카드를 조합한 맞춤 해석
+- **카드 기반 해석**: tarotData.ts의 카드별 해석(description)을 활용한 과거·현재·미래 해석
 - **일일 1회 무료**: 로컬 스토리지 기반 제한
 - **결제 유도 팝업**: 무료 횟수 초과 시 프리미엄 안내
 - **결제 성공 페이지** (`/success`): Stripe/Lemon Squeezy 결제 완료 후 리다이렉트
@@ -29,13 +29,11 @@ npm install
 
 ### 2. 환경 변수 설정
 
-`.env.local` 파일을 만들고 OpenAI API 키를 추가하세요:
+`.env.local` 파일을 만들고 필요한 환경 변수를 설정하세요:
 
-```
-OPENAI_API_KEY=sk-your-api-key-here
-```
+**결제 (PayPal):**
 
-API 키는 [OpenAI Platform](https://platform.openai.com/api-keys)에서 발급받을 수 있습니다.
+- `NEXT_PUBLIC_PAYPAL_CLIENT_ID`: PayPal Sandbox/Production 클라이언트 ID
 
 **프로덕트 헌트 / SNS 공유용 (선택):**
 
@@ -55,7 +53,7 @@ npm run dev
 
 - **Next.js 16** - App Router
 - **Tailwind CSS 4** - 스타일링
-- **OpenAI API** - GPT-4o-mini 기반 해석 생성
+- **tarotData** - 카드별 해석 데이터 기반
 - **TypeScript**
 
 ## 프로젝트 구조
@@ -63,7 +61,7 @@ npm run dev
 ```
 src/
 ├── app/
-│   ├── api/interpret/   # OpenAI 해석 API
+│   ├── api/             # API 라우트 (필요 시)
 │   ├── success/         # 결제 성공 페이지
 │   ├── layout.tsx
 │   ├── page.tsx
@@ -74,7 +72,8 @@ src/
 │   ├── InterpretationModal.tsx
 │   └── PaymentPopup.tsx
 ├── data/
-│   └── tarotCards.ts      # 78장 카드 데이터
+│   ├── tarotCards.ts      # 78장 카드 메타데이터
+│   └── tarotData.ts       # 78장 카드별 해석(description)
 └── hooks/
     ├── useDailyLimit.ts   # 일일 무료 제한 훅
     └── useHaptic.ts       # 햅틱 피드백 (Vibration API)

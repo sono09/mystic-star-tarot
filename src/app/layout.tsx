@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Cormorant_Garamond } from "next/font/google";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import LocaleSync from "@/components/LocaleSync";
+import PayPalProvider from "@/components/PayPalProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -58,9 +59,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${cormorant.variable} antialiased font-sans`}
       >
         <LanguageProvider>
-        <LocaleSync />
-        {children}
-      </LanguageProvider>
+          <LocaleSync />
+          <PayPalProvider>
+            {children}
+          </PayPalProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

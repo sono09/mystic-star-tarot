@@ -2,6 +2,7 @@
 
 import { forwardRef } from "react";
 import { getLocalizedCard, type TarotCardBase } from "@/data/tarotCards";
+import { getCardData } from "@/lib/tarotInterpretation";
 import type { Locale } from "@/lib/i18n";
 
 interface ShareableResultViewProps {
@@ -14,6 +15,7 @@ interface ShareableResultViewProps {
   presentLabel: string;
   futureLabel: string;
   concernLabel: string;
+  resultHeaderText?: string;
   isPremium?: boolean;
   premiumBadge?: string;
 }
@@ -34,6 +36,7 @@ const ShareableResultView = forwardRef<HTMLDivElement, ShareableResultViewProps>
       presentLabel,
       futureLabel,
       concernLabel,
+      resultHeaderText = "",
       isPremium = false,
       premiumBadge = "",
     },
@@ -55,7 +58,7 @@ const ShareableResultView = forwardRef<HTMLDivElement, ShareableResultViewProps>
         }}
       >
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
           <h1
             style={{
               fontSize: 28,
@@ -70,6 +73,18 @@ const ShareableResultView = forwardRef<HTMLDivElement, ShareableResultViewProps>
           <p style={{ fontSize: 13, color: "rgba(254,243,199,0.7)", marginTop: 6 }}>
             Past · Present · Future
           </p>
+          {resultHeaderText && (
+            <p
+              style={{
+                fontSize: 14,
+                color: "rgba(254,243,199,0.95)",
+                marginTop: 12,
+                lineHeight: 1.5,
+              }}
+            >
+              {resultHeaderText}
+            </p>
+          )}
         </div>
 
         {/* Three cards */}
@@ -82,7 +97,9 @@ const ShareableResultView = forwardRef<HTMLDivElement, ShareableResultViewProps>
           }}
         >
           {cards.map((card, i) => {
-            const { name, meaning } = getLocalizedCard(card, locale);
+            const { name } = getLocalizedCard(card, locale);
+            const cardData = getCardData(card);
+            const keywords = cardData?.keywords?.join(" · ") ?? "";
             return (
               <div
                 key={card.id}
@@ -154,7 +171,7 @@ const ShareableResultView = forwardRef<HTMLDivElement, ShareableResultViewProps>
                     maxHeight: 28,
                   }}
                 >
-                  {meaning}
+                  {keywords}
                 </div>
               </div>
             );
