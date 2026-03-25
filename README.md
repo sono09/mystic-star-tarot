@@ -78,3 +78,13 @@ src/
     ├── useDailyLimit.ts   # 일일 무료 제한 훅
     └── useHaptic.ts       # 햅틱 피드백 (Vibration API)
 ```
+
+
+
+🔮 AI Tarot Reader App
+Tech Stack: React, Next.js, Vercel
+
+Deployment: [여기에 버셀 배포 링크 넣기]
+
+
+Description: An AI-powered tarot service providing personalized daily fortunes. Developed and deployed solo using Vercel.
