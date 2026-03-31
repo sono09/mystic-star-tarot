@@ -84,7 +84,7 @@ src/
 🔮 AI Tarot Reader App
 Tech Stack: React, Next.js, Vercel
 
-Deployment: [여기에 버셀 배포 링크 넣기]
+Deployment: https://mystic-star-tarot.vercel.app/
 
 
 Description: An AI-powered tarot service providing personalized daily fortunes. Developed and deployed solo using Vercel.
